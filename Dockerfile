@@ -1,24 +1,27 @@
-# Use official Node.js 18 image with Alpine
-FROM node:18-alpine
+# Stage 1: Build
+FROM node:20-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files first for optimal caching
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
 COPY package*.json ./
-COPY eslint.config.js ./
 
-# Install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
-# Copy all source files
 COPY . .
 
-# Build application (if needed)
-# RUN npm run build
+RUN npm run build
 
-# Expose port 3000
-EXPOSE 3000
+# Stage 2: Serve
+FROM nginx:alpine
 
-# Start application
-CMD ["npm", "start"]
+# Copy nginx config for SPA routing
+RUN echo 'server { listen 80; location / { root /usr/share/nginx/html; try_files $uri $uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
