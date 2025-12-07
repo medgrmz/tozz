@@ -42,3 +42,12 @@ jobs:
 
       - name: Run Tests
         run: npm test
+        # Gitleaks scan (before compila�on)
+- name: Run Gitleaks scan
+uses: zricethezav/gitleaks-ac�on@v2
+# Upload the Gitleaks report
+- name: Upload Gitleaks report
+uses: ac�ons/upload-ar�fact@v4
+with:
+name: gitleaks-report
+path: results.sarif
