@@ -19,6 +19,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json .
 RUN npm ci --only=production
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 CMD ["npm", "start"]
