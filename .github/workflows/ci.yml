@@ -83,7 +83,7 @@ jobs:
 
 # Run SonarCloud scan
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-ac�on@master
+        uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: .
           args: >
